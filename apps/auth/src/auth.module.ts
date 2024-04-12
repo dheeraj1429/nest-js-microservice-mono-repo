@@ -1,9 +1,8 @@
+import { LoggerModule } from '@app/common';
 import { Module } from '@nestjs/common';
-import { UserModule } from './user/user.module';
-import { JwtGuard, JwtModule, LoggerModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { JwtService } from '@app/common/jwt/jwt.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
