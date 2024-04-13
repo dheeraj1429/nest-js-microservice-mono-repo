@@ -17,4 +17,9 @@ export class UserController {
   async getAllUsers() {
     return this.userService.getAllUsers();
   }
+
+  @Get()
+  async getSingleUser() {
+    console.log('volume binding is working now..');
+  }
 }

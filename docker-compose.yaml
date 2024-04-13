@@ -1,17 +1,49 @@
 services:
-  auth:
-    build:
-      context: .
-      dockerfile: ./apps/auth/Dockerfile
-      target: development
-    command: npm run start:dev auth
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
     ports:
-      - '3000:3000'
-    volumes:
-      - .:/usr/src/app
+      - '2181:2181'
     env_file:
-      - ./apps/auth/.env
+      - ./broker/zookeeper/config/.env
+  kafka:
+    image: 'bitnami/kafka:latest'
+    container_name: 'kafka'
+    ports:
+      - '9092:9092'
+    env_file:
+      - ./broker/kafka/config/.env
     depends_on:
-      - mongo
-  mongo:
-    image: mongo
+      - zookeeper
+
+  # reservations:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/reservations/Dockerfile
+  #     target: development
+  #   command: npm run start:dev reservations
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - .:/usr/src/app
+  #   env_file:
+  #     - ./apps/reservations/.env
+  #   depends_on:
+  #     - mongo
+
+  # auth:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/auth/Dockerfile
+  #     target: development
+  #   command: npm run start:dev auth
+  #   ports:
+  #     - '3001:3001'
+  #   volumes:
+  #     - .:/usr/src/app
+  #   env_file:
+  #     - ./apps/auth/.env
+  #   depends_on:
+  #     - mongo
+
+  # mongo:
+  #   image: mongo

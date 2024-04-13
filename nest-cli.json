@@ -34,6 +34,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
+    },
+    "cloud-upload": {
+      "type": "application",
+      "root": "apps/cloud-upload",
+      "entryFile": "main",
+      "sourceRoot": "apps/cloud-upload/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/cloud-upload/tsconfig.app.json"
+      }
     }
   },
   "monorepo": true,

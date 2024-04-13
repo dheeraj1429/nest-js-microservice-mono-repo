@@ -14,6 +14,7 @@ import { UserModule } from './user/user.module';
         MONGODB_URI: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION: Joi.string().required(),
+        AUTH_HTTP_PORT: Joi.number().required(),
       }),
     }),
   ],

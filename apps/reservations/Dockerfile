@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3001
+EXPOSE 3000
 
-CMD [ "node", "dist/apps/auth/main" ]
+CMD [ "node", "dist/apps/reservations/main" ]
