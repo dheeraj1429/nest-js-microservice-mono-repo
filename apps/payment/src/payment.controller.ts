@@ -1,7 +1,6 @@
-import { RpcValidationFilter } from '@app/common';
+import { CreateChargeDto, RpcValidationFilter } from '@app/common';
 import { Controller, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CreateChargeDto } from './dto/create-charge.dto';
 import { PaymentService } from './payment.service';
 
 @Controller()
@@ -13,6 +12,7 @@ export class PaymentController {
   @UseFilters(new RpcValidationFilter())
   async createCharge(@Payload() payload: CreateChargeDto) {
     console.log(payload);
+    // we can write our own logic here.
     return true;
   }
 }

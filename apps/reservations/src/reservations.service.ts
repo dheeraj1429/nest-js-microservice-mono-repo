@@ -17,7 +17,9 @@ export class ReservationsService implements OnModuleInit {
   }
 
   async create(createReservationDto: CreateReservationDto) {
-    const createChargeSubscribe = await this.paymentService.send('create_charge', {}).toPromise();
+    const createChargeSubscribe = await this.paymentService
+      .send('create_charge', createReservationDto.charge)
+      .toPromise();
     if (createChargeSubscribe?.error) {
       return createChargeSubscribe;
     }
