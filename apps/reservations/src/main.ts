@@ -1,8 +1,8 @@
-import { NestFactory } from '@nestjs/core';
-import { ReservationsModule } from './reservations.module';
 import { ValidationPipe } from '@nestjs/common';
-import { Logger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { Logger } from 'nestjs-pino';
+import { ReservationsModule } from './reservations.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
@@ -13,7 +13,7 @@ async function bootstrap() {
     transport: Transport.KAFKA,
     options: {
       client: {
-        brokers: [configService.get('RESERVATION_BROKER_ID')],
+        brokers: [configService.get('BROKER_ID_0')],
       },
       consumer: {
         groupId: configService.get('RESERVATION_GROUP_ID'),
@@ -24,7 +24,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useLogger(app.get(Logger));
 
-  await app.startAllMicroservices();
+  app.startAllMicroservices();
   await app.listen(configService.get('RESERVATION_HTTP_PORT'));
 }
 bootstrap();

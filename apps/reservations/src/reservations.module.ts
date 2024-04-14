@@ -1,13 +1,12 @@
+import { DatabaseModule, LoggerModule, PAYMENT_SERVICE } from '@app/common';
 import { Module } from '@nestjs/common';
-import { ReservationsService } from './reservations.service';
-import { ReservationsController } from './reservations.controller';
-import { CLOUD_UPLOAD_SERVICE, DatabaseModule } from '@app/common';
-import { ReservationRepository } from './reservations.repository';
-import { Reservation, ReservationSchema } from './models/reservation.schema';
-import { LoggerModule } from '@app/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as Joi from 'joi';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import * as Joi from 'joi';
+import { Reservation, ReservationSchema } from './models/reservation.schema';
+import { ReservationsController } from './reservations.controller';
+import { ReservationRepository } from './reservations.repository';
+import { ReservationsService } from './reservations.service';
 
 @Module({
   imports: [
@@ -19,25 +18,21 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         RESERVATION_HTTP_PORT: Joi.number().required(),
-        RESERVATION_GROUP_ID: Joi.string().required(),
-        RESERVATION_BROKER_ID: Joi.string().required(),
-        CLOUD_UPLOAD_CLIENT_ID: Joi.string().required(),
-        CLOUD_UPLOAD_GROUP_ID: Joi.string().required(),
+        BROKER_ID_0: Joi.string().required(),
       }),
     }),
     ClientsModule.registerAsync({
       clients: [
         {
-          name: CLOUD_UPLOAD_SERVICE,
-          useFactory: (configService: ConfigService) => ({
+          name: PAYMENT_SERVICE,
+          useFactory: (configService) => ({
             transport: Transport.KAFKA,
             options: {
               client: {
-                clientId: configService.get('CLOUD_UPLOAD_CLIENT_ID'),
-                brokers: [configService.get('RESERVATION_BROKER_ID')],
+                brokers: [configService.get('BROKER_ID_0')],
               },
               consumer: {
-                groupId: configService.get('CLOUD_UPLOAD_GROUP_ID'),
+                groupId: configService.get('PAYMENT_GROUP_ID'),
               },
             },
           }),

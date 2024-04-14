@@ -1,13 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { PAYMENT_SERVICE } from '@app/common';
+import { Inject, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { ReservationRepository } from './reservations.repository';
 
 @Injectable()
-export class ReservationsService {
-  constructor(protected readonly reservationRepository: ReservationRepository) {}
+export class ReservationsService implements OnModuleInit {
+  constructor(
+    protected readonly reservationRepository: ReservationRepository,
+    @Inject(PAYMENT_SERVICE) protected readonly paymentService: ClientKafka,
+  ) {}
 
-  create(createReservationDto: CreateReservationDto) {
+  onModuleInit() {
+    this.paymentService.subscribeToResponseOf('create_charge');
+  }
+
+  async create(createReservationDto: CreateReservationDto) {
+    const createChargeSubscribe = await this.paymentService.send('create_charge', {}).toPromise();
+    if (createChargeSubscribe?.error) {
+      return createChargeSubscribe;
+    }
     return this.reservationRepository.create({
       ...createReservationDto,
       timestamp: new Date(),

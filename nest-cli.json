@@ -35,13 +35,13 @@
         "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
     },
-    "cloud-upload": {
+    "payment": {
       "type": "application",
-      "root": "apps/cloud-upload",
+      "root": "apps/payment",
       "entryFile": "main",
-      "sourceRoot": "apps/cloud-upload/src",
+      "sourceRoot": "apps/payment/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/cloud-upload/tsconfig.app.json"
+        "tsConfigPath": "apps/payment/tsconfig.app.json"
       }
     }
   },
