@@ -31,9 +31,4 @@ export class ReservationsController {
   remove(@Param('id') id: string) {
     return this.reservationsService.remove(id);
   }
-
-  @Post('file-upload')
-  async fileUpload() {
-    return this.reservationsService.fileUpload();
-  }
 }

@@ -1,31 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
 import { ReservationsController } from './reservations.controller';
-import { DatabaseModule } from '@app/common';
+import { CLOUD_UPLOAD_SERVICE, DatabaseModule } from '@app/common';
 import { ReservationRepository } from './reservations.repository';
 import { Reservation, ReservationSchema } from './models/reservation.schema';
 import { LoggerModule } from '@app/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'CLOUD_UPLOAD_SERVICE',
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            clientId: 'cloud-upload',
-            brokers: ['127.0.0.1:9092'],
-          },
-          consumer: {
-            groupId: 'cloud-upload-consumer',
-          },
-        },
-      },
-    ]),
     DatabaseModule,
     DatabaseModule.forFeature([{ name: Reservation.name, schema: ReservationSchema }]),
     LoggerModule,
@@ -34,7 +19,31 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         RESERVATION_HTTP_PORT: Joi.number().required(),
+        RESERVATION_GROUP_ID: Joi.string().required(),
+        RESERVATION_BROKER_ID: Joi.string().required(),
+        CLOUD_UPLOAD_CLIENT_ID: Joi.string().required(),
+        CLOUD_UPLOAD_GROUP_ID: Joi.string().required(),
       }),
+    }),
+    ClientsModule.registerAsync({
+      clients: [
+        {
+          name: CLOUD_UPLOAD_SERVICE,
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.KAFKA,
+            options: {
+              client: {
+                clientId: configService.get('CLOUD_UPLOAD_CLIENT_ID'),
+                brokers: [configService.get('RESERVATION_BROKER_ID')],
+              },
+              consumer: {
+                groupId: configService.get('CLOUD_UPLOAD_GROUP_ID'),
+              },
+            },
+          }),
+          inject: [ConfigService],
+        },
+      ],
     }),
   ],
   controllers: [ReservationsController],
