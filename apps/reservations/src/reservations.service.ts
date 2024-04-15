@@ -1,5 +1,5 @@
 import { PAYMENT_SERVICE } from '@app/common';
-import { Inject, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';

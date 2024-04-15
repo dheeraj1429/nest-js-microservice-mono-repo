@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { PaymentModule } from './payment.module';
+import { NotificationModule } from './notification.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(PaymentModule);
+  const app = await NestFactory.create(NotificationModule);
   const configService = app.get(ConfigService);
 
   app.connectMicroservice<MicroserviceOptions>({
@@ -15,7 +15,7 @@ async function bootstrap() {
         brokers: [configService.get('BROKER_ID_0')],
       },
       consumer: {
-        groupId: configService.get('PAYMENT_GROUP_ID'),
+        groupId: configService.get('NOTIFICATION_GROUP_ID'),
       },
     },
   });
